@@ -3,8 +3,6 @@
 **Naive Bayes → 96% Accuracy**
 Projet complet MLOps - ESPRIT 2025
 
-![CI/CD Pipeline](https://github.com/AmineMaalej091102/mlops-drug-classification/actions/workflows/ci-cd.yml/badge.svg)
-
 ## Fonctionnalités
 - Atelier 2 → Code modulaire (`model_pipeline.py` + `main.py`)
 - Atelier 3 → `Makefile` + GitHub Actions
