@@ -1,16 +1,27 @@
 # Drug Classification MLOps Project
 
-Pipeline CI/CD complet avec :
-- Modularisation du code 
-- Makefile local (`make all`)
-- Jenkins Pipeline 
-- Tests unitaires
-- Qualité du code (Black + Flake8)
-- Modèle Naive Bayes → **96% accuracy**
+**Naive Bayes → 96% Accuracy**
+Projet complet MLOps - ESPRIT 2025
 
-Commandes locales :
+![CI/CD Pipeline](https://github.com/AmineMaalej091102/mlops-drug-classification/actions/workflows/ci-cd.yml/badge.svg)
+
+## Fonctionnalités
+- Atelier 2 → Code modulaire (`model_pipeline.py` + `main.py`)
+- Atelier 3 → `Makefile` + GitHub Actions
+- Atelier 4 → API FastAPI (`/predict`, `/retrain`)
+- Excellence → Frontend **Flask** + **Django**
+
+## Lancer le projet
 ```bash
-make all          # Tout faire en local
+make all          # Tout installer + entraîner
+make api          # Lancer FastAPI
+make flask        # Lancer l'interface web 
 ```
+## API
 
-![CI/CD Pipeline](https://github.com/AmineMaalej091102/TON_REPO/actions/workflows/ci-cd.yml/badge.svg)
+- Documentation : http://127.0.0.1:8000/docs
+- Prédiction : POST /predict
+- Réentraînement : POST /retrain
+
+## Auteur
+Mohamed Amine Maalej - ESPRIT 2025
