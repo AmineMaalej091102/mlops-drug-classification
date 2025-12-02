@@ -1,0 +1,82 @@
+# .github/workflows/ci-cd.yml
+name: CI/CD Pipeline - Drug Classification
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-train:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./MohamedAmine-Maalej-4DS8-ml_project
+
+    steps:
+      # 1. Checkout du code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Python
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Cache des dépendances
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # 4. Installation des dépendances
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install black flake8 pytest
+
+      # 5. Formatage automatique (Black)
+      - name: Run Black formatting
+        run: |
+          black model_pipeline.py main.py tests/ --check || (echo "Code non formaté ! Exécute 'make format' en local" && exit 1)
+
+      # 6. Vérification qualité du code (Flake8)
+      - name: Lint with Flake8
+        run: |
+          flake8 model_pipeline.py main.py tests/ --max-line-length=88 --statistics
+
+      # 7. Exécution des tests unitaires
+      - name: Run tests
+        run: |
+          pytest tests/ -v
+
+      # 8. Entraînement du modèle (Naive Bayes)
+      - name: Train & Evaluate Model
+        run: |
+          python main.py data/drug200.csv --train --evaluate
+
+      # 9. Vérification que le modèle a bien été créé
+      - name: Check model was saved
+        run: |
+          ls -la models/
+          test -f models/nb_drug_model.joblib && echo "Modèle sauvegardé avec succès !" || (echo "Modèle non trouvé !" && exit 1)
+
+      # 10. Upload du modèle comme artefact (visible dans GitHub)
+      - name: Upload trained model
+        uses: actions/upload-artifact@v4
+        with:
+          name: trained-naive-bayes-model
+          path: MohamedAmine-Maalej-4DS8-ml_project/models/nb_drug_model.joblib
+
+      # 11. Badge de succès (optionnel mais stylé)
+      - name: Success message
+        if: success()
+        run: |
+          echo "Pipeline CI/CD terminé avec succès !"

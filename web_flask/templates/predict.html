@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Prediction - Flask + FastAPI</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; margin: 0; display: flex; align-items: center; }
+        .container { max-width: 600px; margin: 40px auto; padding: 40px; background: white; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        h1 { text-align: center; color: #333; margin-bottom: 10px; }
+        p.subtitle { text-align: center; color: #666; font-size: 1.1em; }
+        .form-group { margin: 20px 0; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; }
+        input:focus, select:focus { outline: none; border-color: #667eea; }
+        button { padding: 14px 30px; margin: 10px 5px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .btn-predict { background: #667eea; color: white; }
+        .btn-predict:hover { background: #5a6fd8; }
+        .btn-retrain { background: #e74c3c; color: white; }
+        .btn-retrain:hover { background: #c0392b; }
+        .flash { padding: 15px; margin: 15px 0; border-radius: 8px; }
+        .flash.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .flash.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .flash.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        footer { text-align: center; margin-top: 40px; color: white; opacity: 0.8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Prédiction de Médicament</h1>
+    <p class="subtitle"><strong>Naive Bayes • FastAPI + Flask</strong></p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <div class="form-group">
+            <label>Âge</label>
+            <input type="number" name="age" required min="1" max="120">
+        </div>
+
+        <div class="form-group">
+            <label>Sexe</label>
+            <select name="sex" required>
+                <option value="F">Femme</option>
+                <option value="M">Homme</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Tension artérielle (BP)</label>
+            <select name="bp" required>
+                <option value="HIGH">Élevée</option>
+                <option value="NORMAL">Normale</option>
+                <option value="LOW">Basse</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Cholestérol</label>
+            <select name="cholesterol" required>
+                <option value="HIGH">Élevé</option>
+                <option value="NORMAL">Normal</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Na_to_K (ratio sodium/potassium)</label>
+            <input type="number" step="0.001" name="na_to_k" required placeholder="ex: 25.355">
+        </div>
+
+        <div style="text-align: center;">
+            <button type="submit" name="action" value="predict" class="btn-predict">Prédire</button>
+            <button type="submit" name="action" value="retrain" class="btn-retrain">Réentraîner</button>
+        </div>
+    </form>
+
+    <footer>
+        MLOps Project • ESPRIT • 2025
+    </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prédiction de Médicament - MLOps ESPRIT</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f4f7f9; }
+        .container { max-width: 600px; margin: auto; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; }
+        label { display: block; margin: 15px 0 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: #3498db; color: white; padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #2980b9; }
+        .messages { margin: 20px 0; padding: 15px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Prédiction du Type de Médicament</h1>
+    <p><strong>Modèle : Naive Bayes</strong></p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="messages {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <label>Âge</label>
+        <input type="number" name="age" required>
+
+        <label>Sexe</label>
+        <select name="sex" required>
+            <option value="M">Homme</option>
+            <option value="F">Femme</option>
+        </select>
+
+        <label>Tension artérielle</label>
+        <select name="bp" required>
+            <option value="HIGH">Élevée</option>
+            <option value="NORMAL">Normale</option>
+            <option value="LOW">Basse</option>
+        </select>
+
+        <label>Cholestérol</label>
+        <select name="cholesterol" required>
+            <option value="HIGH">Élevé</option>
+            <option value="NORMAL">Normal</option>
+        </select>
+
+        <label>Na_to_K (ratio sodium/potassium)</label>
+        <input type="number" step="0.001" name="na_to_k" required>
+
+        <button type="submit" name="action" value="predict">Prédire le médicament</button>
+    </form>
+
+    <hr>
+    <form method="post" style="margin-top: 30px;">
+        {% csrf_token %}
+        <button type="submit" name="action" value="retrain" style="background: #e74c3c;">
+            Réentraîner le modèle
+        </button>
+    </form>
+</div>
+</body>
+</html>
