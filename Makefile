@@ -22,12 +22,12 @@ lint:
 	@echo "Verification du formatage (black)..."
 	black --check .
 	@echo "Verification de la qualite du code (flake8)..."
-	flake8 model_pipeline.py main.py tests/
+	flake8 model_pipeline.py main.py tests/ --max-line-length=100 --statistics
 
 .PHONY: format
 format:
 	@echo "Formatage automatique du code (black)..."
-	black model_pipeline.py main.py tests/
+	black model_pipeline.py main.py tests/ web_django/ mlflow_tracking.py web_flask/ app.py
 
 # ---------------------------------
 # 3. Tests unitaires
@@ -54,7 +54,7 @@ evaluate: install
 # 5. Pipeline complet (tout en une commande)
 # ---------------------------------
 .PHONY: all
-all: install format test train
+all: install format lint test train
 	@echo "Pipeline complet execute avec succes !"
 
 # ---------------------------------
@@ -112,3 +112,29 @@ mlflow-train: install
 mlflow-all: mlflow-ui
 	@sleep 3
 	@make mlflow-train
+
+# -----------------------------
+# Frontend Web - Flask
+# -----------------------------
+.PHONY: flask
+flask: install
+	@echo "Lancement de l'interface web Flask (consomme l'API FastAPI)"
+	@echo "Ouvre ton navigateur → http://127.0.0.1:5000"
+	@cd web_flask && python app.py
+
+# Version encore plus classe : ouvre automatiquement le navigateur
+.PHONY: flask-open
+flask-open: flask
+	@sleep 2
+	@python -c "import webbrowser; webbrowser.open('http://127.0.0.1:5000')" 2>/dev/null || true
+
+# -----------------------------
+# Lancer API + Frontend Flask en parallèle
+# -----------------------------
+.PHONY: serve
+serve:
+	@echo "Démarrage complet : FastAPI (port 8000) + Flask (port 5000)"
+	@echo "API Docs       → http://127.0.0.1:8000/docs"
+	@echo "Interface Web  → http://127.0.0.1:5000"
+	@echo "MLflow UI      → http://127.0.0.1:5000 (quand lancé avec make mlflow-ui)"
+	@(make api & make flask-open)
